@@ -18,10 +18,6 @@ Configure Prometheus and the Prometheus adapter to register and expose custom me
 Utilize Horizontal Pod Autoscalers (HPA) to automatically scale deployments based on custom metrics and resource utilization.
 
 
-The project aims to scale up pods in a kubernetes cluster based on the custom metrics emitted due to increase in requests and metrics from usage of resources in containers like cpu. We will be using `prom-client` in the javascript code, when the requests rises by its threshold, the number of pod is regulated by `HPA(horizontal pod autoscaler)` in the cluster. We will be using promethus `serviceMonitors` to catch up the metrics and use it further, we will also be using `cadvisor` to check the container resources to scale the pods up and down. Since, we will already be using the resources mentioned above we won't need `metrics-server` of kubernetes.
-
-
-
 
 
 ![alt text](assets/hpa.png)
@@ -72,23 +68,25 @@ Here's how it works:
 Configuration: The Prometheus adapter deployment includes arguments under its spec, specifying the Prometheus URL `(e.g., --prometheus-url=http://prometheus-operator.monitoring:9090)`. This URL directs the adapter to the Prometheus instance where the custom metrics are stored.
 
 Service Account: Additionally, a service account is associated with the adapter deployment. This service account grants the adapter the necessary permissions (e.g., access to namespaces, pods, and services) to interact with the Kubernetes API server and register the custom metrics.
-By retrieving metrics from Prometheus and registering them with the Kubernetes API server, the Prometheus adapter essentially "translates" them into a format understandable by HPAs. This allows HPAs to utilize these custom metrics alongside traditional Kubernetes metrics for intelligent autoscaling decisions..
+
+By retrieving metrics from Prometheus and registering them with the Kubernetes API server, the Prometheus adapter essentially "translates" them into a format understandable by HPAs.
 
 
-Configuring the Prometheus Adapter with Metric Details
+
+
 A ConfigMap resource will be attached to the Prometheus adapter deployment. This ConfigMap plays a crucial role in informing the adapter about the custom metrics it needs to translate and register. It essentially defines a mapping between the custom metrics and their corresponding Kubernetes API representation.
 
 The ConfigMap typically includes the following details:
 
-Metric Name: The name of the custom metric as exposed by the application (e.g., requests_per_second).
+* Metric Name: The name of the custom metric as exposed by the application (e.g., requests_per_second).
 
-Resource Kind: Specifies the Kubernetes resource type this metric represents (e.g., pods or namespaces).
+* Resource Kind: Specifies the Kubernetes resource type this metric represents (e.g., pods or namespaces).
 
-Metric Query: This leverages Prometheus' powerful metric query language, PromQL, to retrieve the desired metric data from Prometheus. 
+* Metric Query: This leverages Prometheus' powerful metric query language, PromQL, to retrieve the desired    metric data from Prometheus. 
 
 You can refer to the [PromQL documentation](https://prometheus.io/docs/prometheus/latest/querying/basics/) for detailed information on constructing effective metric queries.
 
-By providing this configuration information, the Prometheus adapter can effectively translate the custom metrics from Prometheus into a format consumable by HPAs. The metric query within the ConfigMap instructs the adapter on how to precisely extract the relevant metric data from Prometheus for registration with the Kubernetes API server.
+The metric query within the ConfigMap instructs the adapter on how to precisely extract the relevant metric data from Prometheus for registration with the Kubernetes API server.
 
 
 A ConfigMap resource will be attached to the Prometheus adapter deployment. This ConfigMap plays a crucial role in informing the adapter about the custom metrics it needs to translate and register. It essentially defines a mapping between the custom metrics and their corresponding Kubernetes API representation.
@@ -99,6 +97,9 @@ The ConfigMap typically includes the following details for the requests_per_seco
 * Resource Kind: This depends on how you want HPA to interpret the metric. It could be pods or a custom       resource kind specific to your application. 
 * Metric Query: This leverages PromQL to retrieve the desired metric data from Prometheus. 
 `'sum(rate(<<.Series>>{<<.LabelMatchers>>}[2m])) by (<<.GroupBy>>)'`
+
+
+
 
 
 *** Explanation of the Metric Query: ***
@@ -118,6 +119,9 @@ To get what are the custom metrics registered, the command could be
 `kubectl get --raw /apis/custom.metrics.k8s.io/v1beta1 | jq .`
 
 
+
+
+
 *** Cadvisor ***
 
 
@@ -132,6 +136,10 @@ Another apiservice is created to register the resource metrics from directory `p
 
 **Integrating Cadvisor for Resource Monitoring**
 To enable HPA to scale pods based on resource utilization (CPU and memory), we'll leverage Cadvisor. Cadvisor is a container monitoring tool that collects resource usage data from containers.
+
+
+
+
 
 **Cadvisor Deployment:**
 
@@ -176,7 +184,11 @@ By integrating Cadvisor and configuring the Prometheus adapter accordingly, HPA 
 
 The final step involves creating an HPA object within the quiz namespace. This HPA acts as the decision-maker for scaling the backend deployment based on resource utilization and custom metrics.
 
-***HPA Configuration:***
+
+
+
+
+**HPA Configuration:**
 
 Metrics Source: The HPA will be configured to retrieve metrics from the API service exposed by the Prometheus adapter (named resource-metrics).
 Target Deployment: The HPA will target the backend deployment running in the quiz namespace.
