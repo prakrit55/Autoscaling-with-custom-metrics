@@ -13,9 +13,9 @@ This system leverages the power of Prometheus for metric collection and visualiz
 
 By the end of this project, you'll gain a comprehensive understanding of how to:
 
-Implement custom metric collection using the prom-client library.
-Configure Prometheus and the Prometheus adapter to register and expose custom metrics.
-Utilize Horizontal Pod Autoscalers (HPA) to automatically scale deployments based on custom metrics and resource utilization.
+* Implement custom metric collection using the prom-client library.
+* Configure Prometheus and the Prometheus adapter to register and expose custom metrics.
+* Utilize Horizontal Pod Autoscalers (HPA) to automatically scale deployments based on custom metrics and resource utilization.
 
 
 
@@ -102,7 +102,7 @@ The ConfigMap typically includes the following details for the requests_per_seco
 
 
 
-*** Explanation of the Metric Query: ***
+**Explanation of the Metric Query:**
 
 * sum(rate(...)): This part calculates the rate of the metric over a specific time window (2 minutes in this case). The rate function helps convert the counter metric (requests_per_second) into a rate of requests per second.
 * <<.Series>>: This represents the actual metric name retrieved from Prometheus (likely requests_per_second).
@@ -122,7 +122,7 @@ To get what are the custom metrics registered, the command could be
 
 
 
-*** Cadvisor ***
+**Cadvisor**
 
 
 We will be using cadvisor to get the resource metrics such as cpu and memory from the containers which will further to be used by HPA to scale up the replicas based on the usage. The cadvisor is deployed as a daemonset, which is required to be present at each node to get the metrics. A service and servicemonitor will be deployed too to send the metrics to the promethus operator. A serviceaccount to provide permission for podsecurity policy is added to the daemonset.
