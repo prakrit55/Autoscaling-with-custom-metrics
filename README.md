@@ -30,7 +30,8 @@ By the end of this project, you'll gain a comprehensive understanding of how to:
 
 
 
-Here, the backend will be connected to a mongodb deployment, to store and retrieve the data into database. The backend will utilize the prom-client library to emit metrics through an endpoint. Metrics come in four primary types: Counter, Gauge, Histogram, and Summary. In this case, we'll leverage counter metrics to track the number of `requests per second (requests_per_second)`.
+ The backend will utilize the prom-client library to emit metrics through an endpoint. Metrics come in four primary types: Counter, Gauge, Histogram, and Summary. In this case, we'll leverage counter metrics to track the number of `requests per second (requests_per_second)`.
+ Here, the backend will be connected to a mongodb deployment, to store and retrieve the data into database.
 
 
 
