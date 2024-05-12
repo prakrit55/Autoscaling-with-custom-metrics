@@ -1,7 +1,7 @@
 # Autoscaling-with-custom-metrics
 
 
-![alt text](assets/monitoring.png)
+![alt text](assets/prom.png)
 
 
 # Introduction
