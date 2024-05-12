@@ -120,6 +120,8 @@ To get what are the custom metrics registered, the command could be
 
 
 
+![metrics](assets/metrics_entries.png)
+
 
 
 **Cadvisor**
@@ -148,7 +150,7 @@ A Service and ServiceMonitor are deployed alongside Cadvisor.
 The Service exposes Cadvisor's metrics endpoint.
 The ServiceMonitor instructs Prometheus to scrape metrics from the Cadvisor service, making them available for analysis.
 A ServiceAccount associated with the Cadvisor DaemonSet grants the necessary permissions (e.g., for pod security policy) to access container resource data.
-Configuring the Prometheus Adapter for Resource Metrics:
+
 
 Since we're using Cadvisor, the ConfigMap for the Prometheus adapter will need adjustments to handle resource metrics:
 
@@ -171,11 +173,9 @@ By integrating Cadvisor and configuring the Prometheus adapter accordingly, HPA 
 
 
 
-![metrics](assets/metrics_entries.png)
 
 
-
-*** Horizontal Pod Autoscaler (HPA) for Dynamic Scaling ***
+**Horizontal Pod Autoscaler (HPA) for Dynamic Scaling**
 
 
 
