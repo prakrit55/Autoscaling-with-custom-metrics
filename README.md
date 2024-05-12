@@ -198,6 +198,9 @@ Requests per Second: This rule monitors the requests_per_second metric exposed b
 CPU Utilization: This rule monitors the average CPU utilization of the backend pods. If the average CPU usage surpasses a set threshold (e.g., 75 millic cores, which can be customized), the HPA will trigger scaling up.
 
 
+In order to test the project one can run the script in `script` directory, to populate requests to the backend application. You just have to replace the backend url with the original one.
+
+
 # Conclusion
 
 
