@@ -26,19 +26,19 @@ By the end of this project, you'll gain a comprehensive understanding of how to:
 
 # Overview
 
-![alt text](assets/metrics.png)
-
-
-
  The backend will utilize the prom-client library to emit metrics through an endpoint. Metrics come in four primary types: Counter, Gauge, Histogram, and Summary. In this case, we'll leverage counter metrics to track the number of `requests per second (requests_per_second)`.
  Here, the backend will be connected to a mongodb deployment, to store and retrieve the data into database.
 
 
 
+![alt text](assets/metrics.png)
+
+
+Whenever the `/api/questions` endpoint is accessed, the requests_per_second counter metric increments by one using the code `newCounter.labels({requests_times_get: res.statusCode}).inc()`. However, unlike gauges or summaries, counter metric values do not persist across application restarts or process resets. They simply accumulate the total count since the metric's creation.
+
 
 ![alt text](assets/quiz.png)
 
-Whenever the `/api/questions` endpoint is accessed, the requests_per_second counter metric increments by one using the code `newCounter.labels({requests_times_get: res.statusCode}).inc()`. However, unlike gauges or summaries, counter metric values do not persist across application restarts or process resets. They simply accumulate the total count since the metric's creation.
 
 To observe the current value of the `requests_per_second metric`, we can access the `/metrics` endpoint exposed by the application. Prometheus leverages this endpoint through a ServiceMonitor to scrape and store the metric data for further analysis and visualization.
 
