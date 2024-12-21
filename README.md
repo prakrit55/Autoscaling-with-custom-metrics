@@ -46,7 +46,7 @@ To observe the current value of the `requests_per_second metric`, we can access 
 
 
 
-**Setting Up Prometheus and the Prometheus Operator**
+## Setting Up Prometheus and the Prometheus Operator
 
 
 The first step involves deploying the Prometheus operator and its associated Custom Resource Definitions (CRDs) into your Kubernetes cluster. These CRDs define the desired state for Prometheus and related resources.
@@ -59,7 +59,7 @@ The backend application will be deployed within the quiz namespace, labeled with
 The ServiceMonitor acts as a bridge between the application and Prometheus. It instructs Prometheus to periodically scrape the `/metrics` endpoint of the backend service, collecting the exposed metrics (including the `requests_per_second` counter) for processing and storage by the Prometheus operator.
 
 
-**Promethus adapter**
+## Promethus adapter
 
 
 The Prometheus adapter acts as a mediator between Prometheus and the Kubernetes API server. Its primary function is to retrieve custom metrics from Prometheus and expose them as official Kubernetes metrics accessible by Horizontal Pod Autoscalers (HPA).
@@ -103,7 +103,7 @@ The ConfigMap typically includes the following details for the requests_per_seco
 
 
 
-**Explanation of the Metric Query:**
+## Explanation of the Metric Query:
 
 * sum(rate(...)): This part calculates the rate of the metric over a specific time window (2 minutes in this case). The rate function helps convert the counter metric (requests_per_second) into a rate of requests per second.
 * <<.Series>>: This represents the actual metric name retrieved from Prometheus (likely requests_per_second).
@@ -119,13 +119,7 @@ To get what are the custom metrics registered, the command could be
 
 `kubectl get --raw /apis/custom.metrics.k8s.io/v1beta1 | jq .`
 
-
-
-![metrics](assets/metrics_entries.png)
-
-
-
-**Cadvisor**
+## Cadvisor
 
 
 We will be using cadvisor to get the resource metrics such as cpu and memory from the containers which will further to be used by HPA to scale up the replicas based on the usage. The cadvisor is deployed as a daemonset, which is required to be present at each node to get the metrics. A service and servicemonitor will be deployed too to send the metrics to the promethus operator. A serviceaccount to provide permission for podsecurity policy is added to the daemonset.
@@ -137,14 +131,14 @@ Another apiservice is created to register the resource metrics from directory `p
 
 
 
-**Integrating Cadvisor for Resource Monitoring**
+## Integrating Cadvisor for Resource Monitoring
 To enable HPA to scale pods based on resource utilization (CPU and memory), we'll leverage Cadvisor. Cadvisor is a container monitoring tool that collects resource usage data from containers.
 
 
 
 
 
-**Cadvisor Deployment:**
+## Cadvisor Deployment:
 
 A DaemonSet deployment ensures Cadvisor runs on every node in the cluster, collecting container resource metrics.
 A Service and ServiceMonitor are deployed alongside Cadvisor.
@@ -165,7 +159,7 @@ An additional API service named resource-metrics will be created within the prom
 By integrating Cadvisor and configuring the Prometheus adapter accordingly, HPA can access both custom metrics (requests_per_second) and resource metrics (CPU, memory) to make informed decisions about scaling the application deployment.
 
 
-**Registering Resource Metrics:**
+## Registering Resource Metrics:
 
 An additional API service named resource-metrics will be created within the prom-adapter directory. This API service serves as a registration point for the resource metrics retrieved from Cadvisor via Prometheus.
 
@@ -176,7 +170,7 @@ By integrating Cadvisor and configuring the Prometheus adapter accordingly, HPA 
 
 
 
-**Horizontal Pod Autoscaler (HPA) for Dynamic Scaling**
+## Horizontal Pod Autoscaler (HPA) for Dynamic Scaling
 
 
 
@@ -189,7 +183,7 @@ The final step involves creating an HPA object within the quiz namespace. This H
 
 
 
-**HPA Configuration:**
+## HPA Configuration:
 
 Metrics Source: The HPA will be configured to retrieve metrics from the API service exposed by the Prometheus adapter (named resource-metrics).
 Target Deployment: The HPA will target the backend deployment running in the quiz namespace.
